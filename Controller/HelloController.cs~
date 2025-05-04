@@ -1,0 +1,22 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using SampleApi.Service;
+
+namespace SampleApi.Controller;
+
+[ApiController]
+[Route("[controller]")]
+public class HelloController
+{
+    private readonly IHelloService _helloService;
+
+    public HelloController(IHelloService helloService)
+    {
+        _helloService = helloService;
+    }
+
+    [HttpGet]
+    public string Get()
+    {
+        return _helloService.hello();
+    }
+}
