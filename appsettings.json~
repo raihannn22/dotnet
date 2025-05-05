@@ -1,0 +1,14 @@
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "AllowedHosts": "*",
+  
+  "ConnectionStrings": {
+    "db_employee_net": "Host=localhost;Port=5432;Database=db_employee_net;Username=postgre;Password=admin"
+  }
+
+}
