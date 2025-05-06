@@ -1,8 +1,20 @@
-﻿namespace SampleApi.Dto;
+﻿using SampleApi.Entity;
+
+namespace SampleApi.Dto;
 
 public class EmployeeResponse
 {
-    public long Id { get; set; }
+    public EmployeeResponse(Employee employee)
+    {
+        Id = employee.Id;
+        Name = employee.Name;
+    }
+    public long? Id { get; set; }
     public string Name { get; set; }
+
+    public EmployeeResponse()
+    {
+        
+    }
     
 }

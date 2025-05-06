@@ -1,4 +1,5 @@
 ﻿using SampleApi.Data;
+using SampleApi.Dto;
 using SampleApi.Entity;
 
 namespace SampleApi.Repositories;
@@ -18,4 +19,14 @@ public class EmployeeRepository : IEmployeeRepository
         await _context.SaveChangesAsync();
         return employee;
     }
+
+    public async Task<IEnumerable<Employee>> GetAll()
+    {
+        IEnumerable<Employee> employees = new List<Employee>();
+        employees = _context.Employees.ToList();
+        return employees;
+        
+    }
+
+    
 }
