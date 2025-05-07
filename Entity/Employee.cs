@@ -11,4 +11,6 @@ public class Employee
     public long Id { get; set; }
     [Column]
     public string Name { get; set; }
+    [Column]
+    public bool IsDeleted { get; set; } = false;
 }

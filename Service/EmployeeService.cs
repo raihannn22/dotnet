@@ -34,6 +34,22 @@ public class EmployeeService : IEmployeeService
         };
     }
 
+    public async Task<EmployeeResponse> updateEmployee(EmployeeRequest employeeRequest , long id)
+    {
+        Employee employee = await _context.Employees.FirstOrDefaultAsync(x => x.Id == id && x.IsDeleted == false);
+
+        if (employee == null)
+        {
+            throw new Exception("Employee not found");
+        }
+
+        employee.Name = employeeRequest.Name;
+
+        _context.SaveChangesAsync();
+
+        return new EmployeeResponse(employee);
+    }
+
     public async Task<IEnumerable<EmployeeResponse>> GetListEmployees() 
     {
         IEnumerable<Employee> employees = await _employeeRepository.GetAll();
@@ -56,21 +72,29 @@ public class EmployeeService : IEmployeeService
         };
     }
 
-    public async Task<List<EmployeeResponse>> GetEmployeeByName(string? name)
+    public async Task<List<EmployeeResponse>> GetEmployeeByName(string? name, bool isAscending = true, 
+        int pageNumber = 1 , int pageSize = 20)
     {
         var employees = _context.Employees.AsQueryable();
+        employees = employees.Where(x => x.IsDeleted == false);
+        
+        //filtering
         if (name != null)
         {
-           employees = employees.Where(x => x.Name.ToLower().Contains(name.ToLower().Trim()));
+            employees = employees.Where(x => x.Name.ToLower().Contains(name.ToLower().Trim()));
         }
-        
         if (!employees.Any())
         {
             throw new Exception("Employee not found");
         }
 
-        employees = employees.OrderBy(x => x.Id);
+        //sorting
+        employees = isAscending? employees.OrderBy(x => x.Id) : employees.OrderByDescending(x => x.Id);
 
+        //paging
+        var skipResult = (pageNumber - 1) * pageSize;
+
+        employees = employees.Skip(skipResult).Take(pageSize);
     
         return employees.Select(e => new EmployeeResponse(e)).ToList();
     }
@@ -100,6 +124,19 @@ public class EmployeeService : IEmployeeService
             Id = employee.Id,
             Name = employee.Name
         };
+    }
+
+    public async Task<string> SoftDelete(long id)
+    {
+        Employee employee = await _context.Employees.FindAsync(id);
+        if (employee != null)
+        {
+            employee.IsDeleted = true;
+            await _context.SaveChangesAsync();
+            return "data dengan id " + id + " berhasil di hapus!!";
+        }
+        return "data dengan id " + id + " tidak ditemukan!!";
+        
     }
 
 

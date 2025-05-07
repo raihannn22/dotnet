@@ -33,6 +33,19 @@ public class EmployeeController : ControllerBase
         return Ok(employeeResponse);
     }
 
+    [HttpPut("update/{id}")]
+    public async Task<IActionResult> Update([FromBody] EmployeeRequest employeeRequest, long id)
+    {
+        if (employeeRequest == null)
+        {
+            return BadRequest("gaa boleh kosong!!");
+        }
+
+        var employeeResponse = await _employeeService.updateEmployee(employeeRequest, id);
+
+        return Ok(employeeResponse);
+    }
+
     [HttpGet("get/list")]
     public async Task<ActionResult<IEnumerable<EmployeeResponse>>> GetListEmployees()
     {
@@ -49,9 +62,10 @@ public class EmployeeController : ControllerBase
     }
 
     [HttpGet("getByName")]
-    public async Task<ActionResult<List<EmployeeResponse>>> GetEmployeeByName([FromQuery]string? name)
+    public async Task<ActionResult<List<EmployeeResponse>>> GetEmployeeByName([FromQuery]string? name, [FromQuery]bool? isAscending,
+        [FromQuery] int pageNumber = 1 , [FromQuery] int pageSize = 20)
     {
-        var response = await _employeeService.GetEmployeeByName(name);
+        var response = await _employeeService.GetEmployeeByName(name, isAscending ?? true, pageNumber, pageSize);
         return Ok(response);
     }
 
@@ -60,8 +74,14 @@ public class EmployeeController : ControllerBase
     public async Task<IActionResult> SaveOrUpdate([FromBody] EmployeeSaveUpdate employeeSaveUpdate)
     {
             EmployeeResponse response = await _employeeService.SaveOrUpdate(employeeSaveUpdate);
-            return Ok(response);    
-        
+            return Ok(response); 
+    }
+
+    [HttpDelete("sofdelete/{id}")]
+    public async Task<string> sofDelete(long id)
+    {
+        string response = await _employeeService.SoftDelete(id);
+        return response;
     }
 
 }
