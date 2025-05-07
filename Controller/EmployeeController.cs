@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Mvc;
 using SampleApi.Dto;
@@ -9,6 +10,7 @@ namespace SampleApi.Controller;
 
 [Microsoft.AspNetCore.Components.Route("employee/[controller]")]
 [ApiController]
+[Authorize] 
 public class EmployeeController : ControllerBase
 {
     private readonly IEmployeeService _employeeService;

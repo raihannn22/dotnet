@@ -287,3 +287,4 @@ C:\Users\LENOVO\Documents\OGYA\dotnet\vs\SampleApi\bin\Debug\net8.0\Microsoft.Id
 C:\Users\LENOVO\Documents\OGYA\dotnet\vs\SampleApi\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
 C:\Users\LENOVO\Documents\OGYA\dotnet\vs\SampleApi\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
 C:\Users\LENOVO\Documents\OGYA\dotnet\vs\SampleApi\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll
+C:\Users\LENOVO\Documents\OGYA\dotnet\vs\SampleApi\bin\Debug\net8.0\BCrypt.Net-Next.dll
