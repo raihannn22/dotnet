@@ -10,8 +10,6 @@
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
     builder.Services.AddControllers();
-    builder.Services.AddScoped<IHelloRepository, HelloRepository>();
-    builder.Services.AddScoped<IHelloService, HelloService>();
     builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
     builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 

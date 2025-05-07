@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Mvc;
 using SampleApi.Dto;
+using SampleApi.ExceptionHandler;
 using SampleApi.Service;
 
 namespace SampleApi.Controller;
@@ -45,18 +46,20 @@ public class EmployeeController : ControllerBase
         return Ok(response);
     }
 
-    [HttpGet("get")]
-    public async Task<ActionResult<EmployeeResponse>> GetEmployeeByName([FromQuery]string name)
+    [HttpGet("getByName")]
+    public async Task<ActionResult<List<EmployeeResponse>>> GetEmployeeByName([FromQuery]string? name)
     {
-        EmployeeResponse response = await _employeeService.GetEmployeeByName(name);
+        var response = await _employeeService.GetEmployeeByName(name);
         return Ok(response);
     }
 
     [HttpPost("save-update")]
-    public async Task<IActionResult> SaveOrUpdate([FromBody] EmployeeResponse employeeResponse)
+    [ValidateModel]
+    public async Task<IActionResult> SaveOrUpdate([FromBody] EmployeeSaveUpdate employeeSaveUpdate)
     {
-        EmployeeResponse response = await _employeeService.SaveOrUpdate(employeeResponse);
-        return Ok(response);
+            EmployeeResponse response = await _employeeService.SaveOrUpdate(employeeSaveUpdate);
+            return Ok(response);    
+        
     }
 
 }

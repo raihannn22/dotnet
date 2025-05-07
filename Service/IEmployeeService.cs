@@ -8,7 +8,7 @@ public interface IEmployeeService
     Task<IEnumerable<EmployeeResponse>> GetListEmployees();
     Task<EmployeeResponse> GetEmployeeById(long id);
     
-    Task<EmployeeResponse> GetEmployeeByName(string name);
+    Task<List<EmployeeResponse>> GetEmployeeByName(string name);
     
-    Task<EmployeeResponse> SaveOrUpdate(EmployeeResponse employeeResponse);
+    Task<EmployeeResponse> SaveOrUpdate(EmployeeSaveUpdate employeeSaveUpdate);
 }

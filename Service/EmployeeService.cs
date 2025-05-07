@@ -56,36 +56,45 @@ public class EmployeeService : IEmployeeService
         };
     }
 
-    public async Task<EmployeeResponse> GetEmployeeByName(string name)
+    public async Task<List<EmployeeResponse>> GetEmployeeByName(string? name)
     {
-        Employee employee = await _context.Employees.FirstOrDefaultAsync(x => x.Name == name);
-        if (employee == null)
+        var employees = _context.Employees.AsQueryable();
+        if (name != null)
+        {
+           employees = employees.Where(x => x.Name.ToLower().Contains(name.ToLower().Trim()));
+        }
+        
+        if (!employees.Any())
         {
             throw new Exception("Employee not found");
         }
-        EmployeeResponse response = new EmployeeResponse(employee);
-        return response;
+
+        employees = employees.OrderBy(x => x.Id);
+
+    
+        return employees.Select(e => new EmployeeResponse(e)).ToList();
     }
 
-    public async Task<EmployeeResponse> SaveOrUpdate(EmployeeResponse employeeResponse)
+    public async Task<EmployeeResponse> SaveOrUpdate(EmployeeSaveUpdate employeeSaveUpdate)
     {
         Employee employee = new Employee();
-        if (employeeResponse.Id != null)
+        if (employeeSaveUpdate.Id != null)
         {
-            employee = _context.Employees.FirstOrDefault(x => x.Id == employeeResponse.Id);
+            employee = _context.Employees.FirstOrDefault(x => x.Id == employeeSaveUpdate.Id);
             if (employee == null)
             {
                 throw new Exception("Employee not found");
             }
-            employee.Name = employeeResponse.Name;
+            employee.Name = employeeSaveUpdate.Name;
         }
         else
         {
-            employee.Name = employeeResponse.Name;
+            employee.Name = employeeSaveUpdate.Name;
             await _context.Employees.AddAsync(employee);
         }
         
         await _context.SaveChangesAsync();
+        
         return new EmployeeResponse()
         {
             Id = employee.Id,
