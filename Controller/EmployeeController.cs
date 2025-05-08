@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SampleApi.Dto;
 using SampleApi.ExceptionHandler;
@@ -8,7 +6,7 @@ using SampleApi.Service;
 
 namespace SampleApi.Controller;
 
-[Microsoft.AspNetCore.Components.Route("employee/[controller]")]
+[Route("[controller]")]
 [ApiController]
 [Authorize] 
 public class EmployeeController : ControllerBase
@@ -21,6 +19,7 @@ public class EmployeeController : ControllerBase
     }
 
     [HttpPost("save")]
+    [ValidateModel]
     public async Task<IActionResult> Save([FromBody] EmployeeRequest employeeRequest)
     {
         if (employeeRequest == null)
@@ -32,8 +31,17 @@ public class EmployeeController : ControllerBase
 
         return Ok(employeeResponse);
     }
+    
+    [HttpPost("save-update")]
+    [ValidateModel]
+    public async Task<IActionResult> SaveOrUpdate([FromBody] EmployeeSaveUpdate employeeSaveUpdate)
+    {
+        EmployeeResponse response = await _employeeService.SaveOrUpdate(employeeSaveUpdate);
+        return Ok(response); 
+    }
 
     [HttpPut("update/{id}")]
+    [ValidateModel]
     public async Task<IActionResult> Update([FromBody] EmployeeRequest employeeRequest, long id)
     {
         if (employeeRequest == null)
@@ -61,7 +69,7 @@ public class EmployeeController : ControllerBase
         return Ok(response);
     }
 
-    [HttpGet("getByName")]
+    [HttpGet("getByCriteriaPaginated")]
     public async Task<ActionResult<List<EmployeeResponse>>> GetEmployeeByName([FromQuery]string? name, [FromQuery]bool? isAscending,
         [FromQuery] int pageNumber = 1 , [FromQuery] int pageSize = 20)
     {
@@ -69,18 +77,17 @@ public class EmployeeController : ControllerBase
         return Ok(response);
     }
 
-    [HttpPost("save-update")]
-    [ValidateModel]
-    public async Task<IActionResult> SaveOrUpdate([FromBody] EmployeeSaveUpdate employeeSaveUpdate)
-    {
-            EmployeeResponse response = await _employeeService.SaveOrUpdate(employeeSaveUpdate);
-            return Ok(response); 
-    }
-
     [HttpDelete("sofdelete/{id}")]
     public async Task<string> sofDelete(long id)
     {
         string response = await _employeeService.SoftDelete(id);
+        return response;
+    }
+    
+    [HttpDelete("hardDelete/{id}")]
+    public async Task<string> hardDelete(long id)
+    {
+        string response = await _employeeService.HardDelete(id);
         return response;
     }
 

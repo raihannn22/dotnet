@@ -15,4 +15,6 @@ public interface IEmployeeService
     Task<EmployeeResponse> SaveOrUpdate(EmployeeSaveUpdate employeeSaveUpdate);
 
     Task<string> SoftDelete(long id);
+    
+    Task<string> HardDelete(long id);
 }

@@ -1,13 +1,13 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Identity.Data;
+﻿
 using Microsoft.AspNetCore.Mvc;
 using SampleApi.Dto;
+using SampleApi.ExceptionHandler;
 using SampleApi.Service;
 using LoginRequest = SampleApi.Dto.LoginRequest;
 
 namespace SampleApi.Controller;
 
-[Microsoft.AspNetCore.Components.Route("login/[controller]")]
+[Route("[controller]")]
 [ApiController] 
 public class AuthController : ControllerBase
 {
@@ -18,12 +18,21 @@ public class AuthController : ControllerBase
         _jwtService = jwtService;
     }
 
-    [HttpPost("auth")]
+    [HttpPost("login")]
+    [ValidateModel]
     public IActionResult Login([FromBody] LoginRequest loginRequest)
     {
         String generate = _jwtService.generateToken(loginRequest);
         
         return Ok(new LoginResponse { Token = generate });
+    }
+
+    [HttpPost("register")]
+    [ValidateModel]
+    public IActionResult Register([FromBody] LoginRequest loginRequest)
+    {
+        string response = _jwtService.Register(loginRequest);
+        return Ok(response);
     }
  
 }

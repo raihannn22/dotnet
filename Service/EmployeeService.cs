@@ -133,10 +133,22 @@ public class EmployeeService : IEmployeeService
         {
             employee.IsDeleted = true;
             await _context.SaveChangesAsync();
-            return "data dengan id " + id + " berhasil di hapus!!";
+            return "data dengan id " + id + " berhasil di hapus (soft)!";
         }
         return "data dengan id " + id + " tidak ditemukan!!";
         
+    }
+
+    public async Task<string> HardDelete(long id)
+    {
+        Employee employee = await _context.Employees.FirstOrDefaultAsync(x => x.Id == id);
+
+        if (employee != null)
+        {
+            _context.Employees.Remove(employee);
+            return "data dengan id " + id + " berhasil di hapus (Hard)!";
+        }
+        return "data dengan id " + id + " tidak ditemukan!!";
     }
 
 

@@ -14,6 +14,7 @@
     // Add services to the container.
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
     builder.Services.AddEndpointsApiExplorer();
+    builder.Services.AddHttpContextAccessor();
     builder.Services.AddSwaggerGen();
     builder.Services.AddControllers();
     builder.Services.AddScoped<JWTService>();
@@ -22,8 +23,11 @@
 
     var connectionString = builder.Configuration.GetConnectionString("db_employee_net");
 
-    builder.Services.AddDbContext<AppDbContext>(options =>
-        options.UseNpgsql(connectionString));
+    builder.Services.AddDbContext<AppDbContext>((serviceProvider, options) =>
+    {
+        options.UseNpgsql(connectionString);
+    }, ServiceLifetime.Scoped, ServiceLifetime.Singleton);
+        
     
     builder.Services.AddSingleton<IPasswordHasher<AppUser>, PasswordHasher<AppUser>>();
 

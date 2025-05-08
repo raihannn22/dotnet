@@ -59,4 +59,24 @@ public class JWTService
 
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
+
+    public string Register(LoginRequest loginRequest)
+    {
+        var ExistUser = _context.Users.FirstOrDefault(x => x.Username.ToLower() == loginRequest.Username.ToLower());
+
+        if (ExistUser != null)
+        {
+            return "nama pengguna sudah ada!";
+        }
+
+        AppUser user = new AppUser()
+        {
+            Username = loginRequest.Username,
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword(loginRequest.Password),
+        };
+        
+        _context.Users.Add(user);
+        _context.SaveChanges();
+        return "berhasil membuat user dengan username " + loginRequest.Username + ", silahkan login!";
+    }
 }
