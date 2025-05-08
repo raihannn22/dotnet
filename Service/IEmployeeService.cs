@@ -7,7 +7,7 @@ public interface IEmployeeService
     Task<EmployeeResponse> SaveEmployee(EmployeeRequest employeeRequest);
     
     Task<EmployeeResponse> updateEmployee(EmployeeRequest employeeRequest, long id);
-    Task<IEnumerable<EmployeeResponse>> GetListEmployees();
+    Task<List<EmployeeResponse>> GetListEmployees();
     Task<EmployeeResponse> GetEmployeeById(long id);
     
     Task<List<EmployeeResponse>> GetEmployeeByName(string name, bool isAscending, int pageNumber , int pageSize);

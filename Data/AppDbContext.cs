@@ -17,6 +17,8 @@ public class AppDbContext : DbContext
     public DbSet<Employee> Employees { get; set; } 
     
     public DbSet<AppUser> Users { get; set; }
+    
+    public DbSet<Division> Divisions { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -26,6 +28,24 @@ public class AppDbContext : DbContext
                 Id = 1,
                 Username = "admin",
                 PasswordHash = "$2a$12$0jXbBkQmLp0r.sOmacTLWuvE2N9Fj3wRXa6wOlyV1vdXkbw5tOYoa", // Hash dari "123456"
+            }
+        );
+
+        modelBuilder.Entity<Division>().HasData(
+            new Division
+            {
+                Id = 1,
+                Name = "Information Technology",
+                CreatedAt = DateTime.SpecifyKind(new DateTime(2024, 1, 1), DateTimeKind.Utc),
+                CreatedBy = "admin"
+            },
+            
+            new Division
+            {
+                Id = 2,
+                Name = "Human Reasource",
+                CreatedAt = DateTime.SpecifyKind(new DateTime(2024, 1, 1), DateTimeKind.Utc),
+                CreatedBy = "admin"
             }
         );
     }

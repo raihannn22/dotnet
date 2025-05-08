@@ -20,18 +20,24 @@ public class EmployeeService : IEmployeeService
 
     public async Task<EmployeeResponse> SaveEmployee(EmployeeRequest employeeRequest)
     {
+        var division = _context.Divisions.Find(employeeRequest.DivisionId);
+        if (division == null)
+        {
+            throw new Exception("Division not found");
+        }
+        
         var employee = new Employee
         {
-            Name = employeeRequest.Name
+            Name = employeeRequest.Name,
+            Email = employeeRequest.Email,
+            Salary = employeeRequest.Salary,
+            Address = employeeRequest.Address,
+            DivisionId = employeeRequest.DivisionId
         };
 
         var saved = await _employeeRepository.Save(employee);
 
-        return new EmployeeResponse()
-        {
-            Id = saved.Id, 
-            Name = saved.Name
-        };
+        return new EmployeeResponse(employee);
     }
 
     public async Task<EmployeeResponse> updateEmployee(EmployeeRequest employeeRequest , long id)
@@ -50,32 +56,27 @@ public class EmployeeService : IEmployeeService
         return new EmployeeResponse(employee);
     }
 
-    public async Task<IEnumerable<EmployeeResponse>> GetListEmployees() 
+    public async Task<List<EmployeeResponse>> GetListEmployees() 
     {
-        IEnumerable<Employee> employees = await _employeeRepository.GetAll();
-        IEnumerable<EmployeeResponse> employeesResponse = employees.Select(e => new EmployeeResponse()
-        {
-            Id = e.Id,
-            Name = e.Name
-        });
+        List<Employee> employees = await _context.Employees.Include(e => e.Division).ToListAsync();
+        List<EmployeeResponse> employeesResponse = employees.Select(e => new EmployeeResponse(e)).ToList();
         return employeesResponse;
     }
 
     public async Task<EmployeeResponse> GetEmployeeById(long id)
     {
         Employee employee = await _context.Employees.FindAsync(id);
-        return new EmployeeResponse()
+        if (employee == null)
         {
-            Id = employee.Id,
-            Name = employee.Name,
-            
-        };
+            throw new Exception("Employee not found");
+        }
+        return new EmployeeResponse(employee);
     }
 
     public async Task<List<EmployeeResponse>> GetEmployeeByName(string? name, bool isAscending = true, 
         int pageNumber = 1 , int pageSize = 20)
     {
-        var employees = _context.Employees.AsQueryable();
+        var employees = _context.Employees.Include(e => e.Division).AsQueryable();
         employees = employees.Where(x => x.IsDeleted == false);
         
         //filtering
@@ -101,29 +102,40 @@ public class EmployeeService : IEmployeeService
 
     public async Task<EmployeeResponse> SaveOrUpdate(EmployeeSaveUpdate employeeSaveUpdate)
     {
+        var division = _context.Divisions.Find(employeeSaveUpdate.DivisionId);
+        if (division == null)
+        {
+            throw new Exception("Division not found");
+        }
+        
         Employee employee = new Employee();
-        if (employeeSaveUpdate.Id != null)
+        if (employeeSaveUpdate.Id != null) //update
         {
             employee = _context.Employees.FirstOrDefault(x => x.Id == employeeSaveUpdate.Id);
             if (employee == null)
             {
                 throw new Exception("Employee not found");
             }
+
             employee.Name = employeeSaveUpdate.Name;
+            employee.Email = employeeSaveUpdate.Email;
+            employee.Salary = employeeSaveUpdate.Salary;
+            employee.Address = employeeSaveUpdate.Address;
+            employee.DivisionId = employeeSaveUpdate.DivisionId;
         }
-        else
+        else //save
         {
             employee.Name = employeeSaveUpdate.Name;
+            employee.Email = employeeSaveUpdate.Email;
+            employee.Salary = employeeSaveUpdate.Salary;
+            employee.Address = employeeSaveUpdate.Address;
+            employee.DivisionId = employeeSaveUpdate.DivisionId;
             await _context.Employees.AddAsync(employee);
         }
         
         await _context.SaveChangesAsync();
         
-        return new EmployeeResponse()
-        {
-            Id = employee.Id,
-            Name = employee.Name
-        };
+        return new EmployeeResponse(employee);
     }
 
     public async Task<string> SoftDelete(long id)
