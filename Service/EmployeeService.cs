@@ -62,14 +62,14 @@ public class EmployeeService : IEmployeeService
 
     public async Task<List<EmployeeResponse>> GetListEmployees() 
     {
-        List<Employee> employees = await _context.Employees.Include(e => e.Division).ToListAsync();
+        List<Employee> employees = await _context.Employees.Include(e => e.Division).Where(x => x.IsDeleted == false).ToListAsync();
         List<EmployeeResponse> employeesResponse = employees.Select(e => new EmployeeResponse(e)).ToList();
         return employeesResponse;
     }
 
     public async Task<EmployeeResponse> GetEmployeeById(long id)
     {
-        Employee employee = await _context.Employees.FindAsync(id);
+        Employee employee = await _context.Employees.Include(e => e.Division).FirstOrDefaultAsync(e => e.Id == id && e.IsDeleted == false);
         if (employee == null)
         {
             throw new Exception("Employee not found");
@@ -150,7 +150,7 @@ public class EmployeeService : IEmployeeService
         Employee employee = new Employee();
         if (employeeSaveUpdate.Id != null) //update
         {
-            employee = _context.Employees.FirstOrDefault(x => x.Id == employeeSaveUpdate.Id);
+            employee = _context.Employees.FirstOrDefault(x => x.Id == employeeSaveUpdate.Id && x.IsDeleted == false);
             if (employee == null)
             {
                 throw new Exception("Employee not found");
@@ -179,7 +179,7 @@ public class EmployeeService : IEmployeeService
 
     public async Task<string> SoftDelete(long id)
     {
-        Employee employee = await _context.Employees.FindAsync(id);
+        Employee employee = await _context.Employees.FirstOrDefaultAsync(e => e.Id == id && e.IsDeleted == false);
         if (employee != null)
         {
             employee.IsDeleted = true;
@@ -192,11 +192,12 @@ public class EmployeeService : IEmployeeService
 
     public async Task<string> HardDelete(long id)
     {
-        Employee employee = await _context.Employees.FirstOrDefaultAsync(x => x.Id == id);
+        Employee employee = await _context.Employees.FirstOrDefaultAsync(x => x.Id == id && x.IsDeleted == false);
 
         if (employee != null)
         {
             _context.Employees.Remove(employee);
+            await _context.SaveChangesAsync();
             return "data dengan id " + id + " berhasil di hapus (Hard)!";
         }
         return "data dengan id " + id + " tidak ditemukan!!";
