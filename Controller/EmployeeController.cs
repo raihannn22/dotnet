@@ -75,11 +75,13 @@ public class EmployeeController : ControllerBase
         [FromQuery]long? maxSalary,
         [FromQuery]long? minSalary,
         [FromQuery]string? address,
+        [FromQuery]long? divisionId,
+        [FromQuery]string? divisionName,
         [FromQuery]bool? isAscending,
         [FromQuery] int pageNumber = 1 , [FromQuery] int pageSize = 20)
     {
         var response = await _employeeService.GetEmployeeByName(name, email, maxSalary, minSalary, address,
-            isAscending ?? true, pageNumber, pageSize);
+            divisionId, divisionName, isAscending ?? true, pageNumber, pageSize);
         return Ok(response);
     }
 

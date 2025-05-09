@@ -50,8 +50,12 @@ public class EmployeeService : IEmployeeService
         }
 
         employee.Name = employeeRequest.Name;
+        employee.Email = employeeRequest.Email;
+        employee.Salary = employeeRequest.Salary;
+        employee.Address = employeeRequest.Address;
+        employee.DivisionId = employeeRequest.DivisionId;
 
-        _context.SaveChangesAsync();
+        await _context.SaveChangesAsync();
 
         return new EmployeeResponse(employee);
     }
@@ -74,6 +78,8 @@ public class EmployeeService : IEmployeeService
     }
 
     public async Task<List<EmployeeResponse>> GetEmployeeByName(string? name, string? email, long? maxSalary, long? minSalary, string? address, 
+        long? divisionId,
+        string? divisionName,
         bool isAscending = true,  
         int pageNumber = 1 , 
         int pageSize = 20)
@@ -105,6 +111,16 @@ public class EmployeeService : IEmployeeService
         if (address != null)
         {
             employees = employees.Where(x => x.Address.ToLower().Contains(address.ToLower().Trim()));
+        }
+        
+        if (divisionId != null)
+        {
+            employees = employees.Where(x => x.DivisionId == divisionId);
+        }
+        
+        if (divisionName != null)
+        {
+            employees = employees.Where(x => x.Division.Name.ToLower().Contains(divisionName.ToLower().Trim()));
         }
         
         if (!employees.Any())

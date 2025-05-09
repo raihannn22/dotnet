@@ -10,7 +10,9 @@ public interface IEmployeeService
     Task<List<EmployeeResponse>> GetListEmployees();
     Task<EmployeeResponse> GetEmployeeById(long id);
     
-    Task<List<EmployeeResponse>> GetEmployeeByName(string? name, string? email, long? maxSalary, long? minSalary, string? address, 
+    Task<List<EmployeeResponse>> GetEmployeeByName(string? name, string? email, long? maxSalary, long? minSalary, string? address,
+        long? divisionId,
+        string? divisionName,
         bool isAscending = true,  
         int pageNumber = 1 , 
         int pageSize = 20);
