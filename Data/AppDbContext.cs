@@ -28,6 +28,8 @@ public class AppDbContext : DbContext
                 Id = 1,
                 Username = "admin",
                 PasswordHash = "$2a$12$0jXbBkQmLp0r.sOmacTLWuvE2N9Fj3wRXa6wOlyV1vdXkbw5tOYoa", // Hash dari "123456"
+                CreatedAt = DateTime.SpecifyKind(new DateTime(2024, 1, 1), DateTimeKind.Utc),
+                CreatedBy = "admin"
             }
         );
 

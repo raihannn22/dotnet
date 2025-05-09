@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 [Table("raihan_users")]
-public class AppUser
+public class AppUser : Auditable
 {
     [Key]
     public long Id { get; set; }

@@ -29,9 +29,9 @@ public class AuthController : ControllerBase
 
     [HttpPost("register")]
     [ValidateModel]
-    public IActionResult Register([FromBody] LoginRequest loginRequest)
+    public async Task<IActionResult> Register([FromBody] LoginRequest loginRequest)
     {
-        string response = _jwtService.Register(loginRequest);
+        string response = await _jwtService.Register(loginRequest);
         return Ok(response);
     }
  

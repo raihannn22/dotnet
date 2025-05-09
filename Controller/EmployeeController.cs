@@ -70,10 +70,16 @@ public class EmployeeController : ControllerBase
     }
 
     [HttpGet("getByCriteriaPaginated")]
-    public async Task<ActionResult<List<EmployeeResponse>>> GetEmployeeByName([FromQuery]string? name, [FromQuery]bool? isAscending,
+    public async Task<ActionResult<List<EmployeeResponse>>> GetEmployeeByName([FromQuery]string? name, 
+        [FromQuery]string? email,
+        [FromQuery]long? maxSalary,
+        [FromQuery]long? minSalary,
+        [FromQuery]string? address,
+        [FromQuery]bool? isAscending,
         [FromQuery] int pageNumber = 1 , [FromQuery] int pageSize = 20)
     {
-        var response = await _employeeService.GetEmployeeByName(name, isAscending ?? true, pageNumber, pageSize);
+        var response = await _employeeService.GetEmployeeByName(name, email, maxSalary, minSalary, address,
+            isAscending ?? true, pageNumber, pageSize);
         return Ok(response);
     }
 

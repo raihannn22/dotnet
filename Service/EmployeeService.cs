@@ -73,8 +73,10 @@ public class EmployeeService : IEmployeeService
         return new EmployeeResponse(employee);
     }
 
-    public async Task<List<EmployeeResponse>> GetEmployeeByName(string? name, bool isAscending = true, 
-        int pageNumber = 1 , int pageSize = 20)
+    public async Task<List<EmployeeResponse>> GetEmployeeByName(string? name, string? email, long? maxSalary, long? minSalary, string? address, 
+        bool isAscending = true,  
+        int pageNumber = 1 , 
+        int pageSize = 20)
     {
         var employees = _context.Employees.Include(e => e.Division).AsQueryable();
         employees = employees.Where(x => x.IsDeleted == false);
@@ -84,6 +86,27 @@ public class EmployeeService : IEmployeeService
         {
             employees = employees.Where(x => x.Name.ToLower().Contains(name.ToLower().Trim()));
         }
+        
+        if (email != null)
+        {
+            employees = employees.Where(x => x.Email.ToLower().Contains(email.ToLower().Trim()));
+        }
+        
+        if (maxSalary != null)
+        {
+            employees = employees.Where(x => x.Salary <= maxSalary);
+        }
+        
+        if (minSalary != null)
+        {
+            employees = employees.Where(x => x.Salary >= minSalary);
+        }
+        
+        if (address != null)
+        {
+            employees = employees.Where(x => x.Address.ToLower().Contains(address.ToLower().Trim()));
+        }
+        
         if (!employees.Any())
         {
             throw new Exception("Employee not found");

@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.Data;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using SampleApi.Data;
 using SampleApi.Entity;
@@ -60,9 +61,9 @@ public class JWTService
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
-    public string Register(LoginRequest loginRequest)
+    public async Task<string> Register(LoginRequest loginRequest)
     {
-        var ExistUser = _context.Users.FirstOrDefault(x => x.Username.ToLower() == loginRequest.Username.ToLower());
+        var ExistUser = await _context.Users.FirstOrDefaultAsync(x => x.Username.ToLower() == loginRequest.Username.ToLower());
 
         if (ExistUser != null)
         {
@@ -75,8 +76,8 @@ public class JWTService
             PasswordHash = BCrypt.Net.BCrypt.HashPassword(loginRequest.Password),
         };
         
-        _context.Users.Add(user);
-        _context.SaveChanges();
+        await _context.Users.AddAsync(user);
+        await _context.SaveChangesAsync();
         return "berhasil membuat user dengan username " + loginRequest.Username + ", silahkan login!";
     }
 }

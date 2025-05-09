@@ -10,7 +10,10 @@ public interface IEmployeeService
     Task<List<EmployeeResponse>> GetListEmployees();
     Task<EmployeeResponse> GetEmployeeById(long id);
     
-    Task<List<EmployeeResponse>> GetEmployeeByName(string name, bool isAscending, int pageNumber , int pageSize);
+    Task<List<EmployeeResponse>> GetEmployeeByName(string? name, string? email, long? maxSalary, long? minSalary, string? address, 
+        bool isAscending = true,  
+        int pageNumber = 1 , 
+        int pageSize = 20);
     
     Task<EmployeeResponse> SaveOrUpdate(EmployeeSaveUpdate employeeSaveUpdate);
 

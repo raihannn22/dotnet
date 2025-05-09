@@ -21,7 +21,7 @@
     builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
     builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 
-    var connectionString = builder.Configuration.GetConnectionString("db_employee_net");
+    var connectionString = builder.Configuration.GetConnectionString("db_dev_net");
 
     builder.Services.AddDbContext<AppDbContext>((serviceProvider, options) =>
     {
