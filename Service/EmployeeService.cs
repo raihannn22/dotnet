@@ -42,6 +42,12 @@ public class EmployeeService : IEmployeeService
 
     public async Task<EmployeeResponse> updateEmployee(EmployeeRequest employeeRequest , long id)
     {
+        var division = _context.Divisions.Find(employeeRequest.DivisionId);
+        if (division == null)
+        {
+            throw new Exception("Division not found");
+        }
+        
         Employee employee = await _context.Employees.FirstOrDefaultAsync(x => x.Id == id && x.IsDeleted == false);
 
         if (employee == null)

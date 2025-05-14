@@ -9,6 +9,9 @@ public class EmployeeSaveUpdate
     [Required]
     [MaxLength(50, ErrorMessage = "data tidak boleh lebih dari 50 kata!!")]
     public string Name { get; set; }
+    
+    [Required]
+    [EmailAddress]
     public string Email { get; set; }
     
     public long Salary { get; set; }
